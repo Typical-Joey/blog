@@ -69,27 +69,22 @@ app.get("/", function (req, res) {
 
 // Sends user to url of a post
 app.post("/", function (req, res) {
-    res.redirect("/posts/" + req.body.postName.replace(/ /g, "-"));
+    res.redirect("/posts/" + req.body.postID);
 });
 
 // Accessing posts using custom url
 app.get("/posts/:post", function (req, res) {
-
-    Post.find(function (err, posts) {
-        if (!err) {
-            posts.forEach(function (post) {
-                let postName = post.name.replace(/ /g, "-");
-                let lowerName = _.toLower(postName);
-                if (postName == req.params.post || lowerName == req.params.post) {
-                    res.render("post", {
-                        postName: post.name,
-                        postBody: post.body
-                    });
-                };
-            });
+    const postID = req.params.post;
+    Post.findById(postID, function (err, post) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("post", {
+                postName: post.name,
+                postBody: post.body
+            })
         }
     });
-
 
 
 });
