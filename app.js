@@ -41,14 +41,29 @@ const post2 = new Post({
 
 const defaultPosts = [post1, post2];
 
-const blogPosts = [];
+// Post.insertMany(defaultPosts, function (err) {
+//     if (err) {
+//         console.log(err)
+//     } else {
+//         console.log("All items added succesfully");
+//     }
+// });
+
+
+
 const homeContent = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
 // Home Page
 app.get("/", function (req, res) {
-    res.render("home", {
-        homeContent: homeContent,
-        blogPosts: blogPosts
+    Post.find(function (err, posts) {
+        if (!err) {
+
+            res.render("home", {
+                homeContent: homeContent,
+                blogPosts: posts
+
+            });
+        }
     });
 });
 
@@ -60,16 +75,22 @@ app.post("/", function (req, res) {
 // Accessing posts using custom url
 app.get("/posts/:post", function (req, res) {
 
-    blogPosts.forEach(function (post) {
-        let postTitle = post.title.replace(/ /g, "-");
-        let lowerTitle = _.toLower(postTitle);
-        if (postTitle == req.params.post || lowerTitle == req.params.post) {
-            res.render("post", {
-                postTitle: post.title,
-                postBody: post.body
+    Post.find(function (err, posts) {
+        if (!err) {
+            posts.forEach(function (post) {
+                let postName = post.name.replace(/ /g, "-");
+                let lowerName = _.toLower(postName);
+                if (postName == req.params.post || lowerName == req.params.post) {
+                    res.render("post", {
+                        postName: post.name,
+                        postBody: post.body
+                    });
+                };
             });
-        };
+        }
     });
+
+
 
 });
 
@@ -85,18 +106,18 @@ app.get("/contact", function (req, res) {
     res.render("contact");
 })
 
-
-// Compose a new post
+// Render compose page
 app.get("/compose", function (req, res) {
     res.render("compose");
 });
 
+// Compose a new post
 app.post("/compose", function (req, res) {
-    const post = {
-        title: req.body.postTitle,
+    const post = new Post({
+        name: req.body.postName,
         body: req.body.postBody
-    };
-    blogPosts.push(post);
+    });
+    post.save();
 
     res.redirect("/");
 })

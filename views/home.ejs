@@ -6,9 +6,9 @@
 <form action="/" method="POST">
 
     <% for(var i = 0; i < blogPosts.length ; i++ ){ %>
-    <h1><%= blogPosts[i].title %> </h1>
+    <h1><%= blogPosts[i].name %> </h1>
     <p><%= blogPosts[i].body.slice(0,100) %>...
-        <button class="btn btn-link" name="postName" value="<%= blogPosts[i].title %>">
+        <button class="btn btn-link" name="postName" value="<%= blogPosts[i].name %>">
             Read More
         </button>
     </p>
