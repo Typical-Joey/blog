@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const app = express();
+require("dotenv").config();
 
 // Setting up express and ejs
 app.set("view engine", "ejs");
@@ -14,14 +15,18 @@ app.use(
 );
 
 // Setting up mongoose
-mongoose.connect(
-  `mongodb+srv://admin-joey:${process.env.DBPASSWORD}@blog.2xoxz.mongodb.net/blogDB`,
-  {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-    useFindAndModify: false,
-  }
-);
+mongoose
+  .connect(
+    `mongodb+srv://josephtcapocci:${process.env.REACT_APP_DBPASSWORD}@cluster0.afhevte.mongodb.net/?retryWrites=true&w=majority`,
+    {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useFindAndModify: false,
+    }
+  )
+  .catch((error) =>
+    console.log(`Error! Please check database credentials. ${error}`)
+  );
 
 // Setting up collection Schema
 const postSchema = mongoose.Schema({
@@ -44,11 +49,11 @@ const post2 = new Post({
 const defaultPosts = [post1, post2];
 
 // Post.insertMany(defaultPosts, function (err) {
-//     if (err) {
-//         console.log(err)
-//     } else {
-//         console.log("All items added succesfully");
-//     }
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("All items added succesfully");
+//   }
 // });
 
 const homeContent =
